@@ -1,6 +1,19 @@
 #include "tcp_socket.h"
 
 #include <string.h>
+#include <errno.h>
+
+TcpSocketResult acceptTcpConnection(const TcpSocket *const tcpSocket, AddressIn *const clientAddressIn,
+                        socklen_t *const addressLen) {
+    const int clientFd = accept(tcpSocket->socket, (struct sockaddr*)clientAddressIn, addressLen);
+    if (clientFd < 0) {
+        TcpSocketResult result;
+        result.isSuccessful = -1;
+        result.value.errorCode = errno;
+        return result;
+    }
+    return makeTcpSocket(clientFd, 0);
+}
 
 int makeTcpConnectionQueue(const TcpSocket *const tcpSocket, const int capacityQueue) {
     if ((listen(tcpSocket->socket, capacityQueue)) < 0) {
@@ -17,17 +30,23 @@ int bindTcpSocket(const TcpSocket *const tcpSocket) {
     return 0;
 }
 
-TcpSocket makeTcpSocket(const Port port) {
+TcpSocketResult makeTcpSocket(const int socketFd, const Port port) {
+    TcpSocketResult result;
     const AddressIn address = makeTcpSocketAddress(port);
-    const int fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0) {
-
+    int fd = socketFd;
+    if (socketFd == 0) {
+        if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+            result.isSuccessful = -1;
+            result.value.errorCode = errno;
+            return result;
+        }
     }
-
-    const struct TcpSocket tcpSocket = {
+    const TcpSocket tcpSocket = {
             .socket = fd, .address = address, .port = port
     };
-    return tcpSocket;
+    result.isSuccessful = 0;
+    result.value.tcpSocket = tcpSocket;
+    return result;
 }
 
 AddressIn makeTcpSocketAddress(const Port port) {
@@ -35,6 +54,6 @@ AddressIn makeTcpSocketAddress(const Port port) {
     memset(&socketAddressIn, 0, sizeof(socketAddressIn));
     socketAddressIn.sin_family = AF_INET;
     socketAddressIn.sin_addr.s_addr = htonl(INADDR_ANY);
-    socketAddressIn.sin_port = port;
+    socketAddressIn.sin_port = htons(port);
     return socketAddressIn;
 }

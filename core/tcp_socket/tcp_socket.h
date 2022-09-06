@@ -12,9 +12,21 @@ typedef struct TcpSocket {
     Port port;
 } TcpSocket;
 
-TcpSocket makeTcpSocket(Port port);
+typedef struct TcpSocketResult {
+    union Value {
+        int errorCode;
+        TcpSocket tcpSocket;
+    } Value;
+
+    char isSuccessful;
+    union Value value;
+} TcpSocketResult;
+
+TcpSocketResult makeTcpSocket(int socketFd, Port port);
 AddressIn makeTcpSocketAddress(Port port);
 int bindTcpSocket(const TcpSocket *tcpSocket);
 int makeTcpConnectionQueue(const TcpSocket *tcpSocket, int capacityQueue);
+TcpSocketResult acceptTcpConnection(const TcpSocket *tcpSocket, AddressIn *clientAddressIn,
+                         socklen_t *addressLen);
 
 #endif //PROJECT_TCP_SOCKET_H
