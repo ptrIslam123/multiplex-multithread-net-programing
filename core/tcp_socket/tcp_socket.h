@@ -6,13 +6,13 @@
 typedef unsigned short Port;
 typedef struct sockaddr_in AddressIn;
 
-typedef struct TcpSocket {
+typedef struct {
     int socket;
     AddressIn address;
     Port port;
 } TcpSocket;
 
-typedef struct TcpSocketResult {
+typedef struct {
     union Value {
         int errorCode;
         TcpSocket tcpSocket;

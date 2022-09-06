@@ -3,10 +3,10 @@
 #include <unistd.h>
 
 #include "core/tcp_socket/tcp_socket.h"
+#include "core/acceptor/multiplex_acceptor.h"
 
-void handleTcpConnection(TcpSocket *const tcpSocket) {
-    const char msg[] = "Hello world";
-    write(tcpSocket->socket, msg, strlen(msg));
+void clientRequestHandler(const TcpSocket *clientSocket, void *data) {
+    printf("Client request!!!\n");
 }
 
 int main() {
@@ -23,17 +23,9 @@ int main() {
     if ((makeTcpConnectionQueue(&tcpSocket, 5)) < 0) {
 
     }
-    AddressIn clientAddressIn;
-    memset(&clientAddressIn, 0, sizeof(clientAddressIn));
-    socklen_t clientAddressLen = sizeof(clientAddressIn);
-    while (1) {
-        result = acceptTcpConnection(&tcpSocket, &clientAddressIn, &clientAddressLen);
-        if (result.isSuccessful < 0) {
 
-        }
-        printf("New client connection\n");
-        handleTcpConnection(&result.value.tcpSocket);
-    }
+    TcpMultiplexAcceptor *acceptor = makeTcpMultiplexAcceptor(&tcpSocket, 2, clientRequestHandler, NULL);
+    runEventPool(acceptor);
 
     return 0;
 }
