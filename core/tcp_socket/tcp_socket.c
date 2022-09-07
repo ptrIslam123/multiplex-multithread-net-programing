@@ -9,7 +9,7 @@ TcpSocketResult acceptTcpConnection(const TcpSocket *const tcpSocket, AddressIn 
     if (clientFd < 0) {
         TcpSocketResult result;
         result.isSuccessful = -1;
-        result.value.errorCode = errno;
+        result.errorCode = errno;
         return result;
     }
     return makeTcpSocket(clientFd, 0);
@@ -37,7 +37,7 @@ TcpSocketResult makeTcpSocket(const int socketFd, const Port port) {
     if (socketFd == 0) {
         if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             result.isSuccessful = -1;
-            result.value.errorCode = errno;
+            result.errorCode = errno;
             return result;
         }
     }
@@ -45,7 +45,7 @@ TcpSocketResult makeTcpSocket(const int socketFd, const Port port) {
             .socket = fd, .address = address, .port = port
     };
     result.isSuccessful = 0;
-    result.value.tcpSocket = tcpSocket;
+    result.tcpSocket = tcpSocket;
     return result;
 }
 

@@ -4,3 +4,4 @@ project(project)
 
 add_subdirectory(core)
 add_subdirectory(multiplex-tcp-server)
+add_subdirectory(multithread-multiplex-tcp-server)

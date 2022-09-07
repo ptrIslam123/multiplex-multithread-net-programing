@@ -13,13 +13,13 @@ typedef struct {
 } TcpSocket;
 
 typedef struct {
-    union Value {
+    union {
         int errorCode;
         TcpSocket tcpSocket;
-    } Value;
+    };
 
     char isSuccessful;
-    union Value value;
+    union value;
 } TcpSocketResult;
 
 TcpSocketResult makeTcpSocket(int socketFd, Port port);

@@ -14,7 +14,7 @@ void tcpListenerRequestHandler(TcpSession *const listenerSession, void *data) {
     }
 
     {
-        const TcpSocket clientSocket = result.value.tcpSocket;
+        const TcpSocket clientSocket = result.tcpSocket;
         const struct pollfd clientPollFd = {.fd = clientSocket.socket, .events = POLLRDNORM};
         if (pushBackPollFd(acceptor, clientPollFd) < 0) {
             // TODO
@@ -26,7 +26,7 @@ void tcpListenerRequestHandler(TcpSession *const listenerSession, void *data) {
             .callback = acceptor->requestHandler.callback
     };
     const TcpSession clientTcpSession = {
-            .clientSocket = result.value.tcpSocket,
+            .clientSocket = result.tcpSocket,
             .requestHandler = clientRequestHandler,
             .status = TcpSessionStatus_Open
     };
