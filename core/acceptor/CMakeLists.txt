@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 
 project(acceptor)
 
-add_library(${PROJECT_NAME} STATIC multiplex_acceptor.c)
+add_library(${PROJECT_NAME} STATIC
+    multiplex_acceptor_api.c
+    array_api.c
+)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC tcp_socket)
 
