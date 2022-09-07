@@ -58,6 +58,7 @@ TcpMultiplexAcceptor *makeTcpMultiplexAcceptor(const TcpSocket *const tcpListene
 
     acceptor->tcpSessionsSize = 0;
     acceptor->clientPollFdSetSize = 0;
+
     const struct pollfd listenerPollFd = {.fd = tcpListener->socket, .events = POLLRDNORM};
     pushBackPollFd(acceptor, listenerPollFd);
 
@@ -73,18 +74,17 @@ TcpMultiplexAcceptor *makeTcpMultiplexAcceptor(const TcpSocket *const tcpListene
     return acceptor;
 }
 
-void handleReadySocket(TcpMultiplexAcceptor *const acceptor, const size_t socketIndex) {
+void handleReadySocket(TcpMultiplexAcceptor *const acceptor, const int socketIndex) {
     TcpSession *const curTcpSession = &(acceptor->tcpSessions[socketIndex]);
     const Callback const callback = curTcpSession->requestHandler.callback;
     TcpSocket *const clientSocket = &curTcpSession->clientSocket;
     callback(curTcpSession, curTcpSession->requestHandler.callbackData);
     if (curTcpSession->status == TcpSessionStatus_Close) {
-        const int socketFd = clientSocket->socket;
-        removePollFd(acceptor, socketIndex);
-        removeTcpSession(acceptor, socketIndex);
-        if (close(socketFd) < 0) {
+        if (close(clientSocket->socket) < 0) {
             // TODO
         }
+        removePollFd(acceptor, socketIndex);
+        removeTcpSession(acceptor, socketIndex);
     }
 }
 

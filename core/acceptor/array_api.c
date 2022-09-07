@@ -47,7 +47,7 @@ void popBackTcpSession(TcpMultiplexAcceptor *const acceptor) {
 }
 
 void removePollFd(TcpMultiplexAcceptor *const acceptor, const int index) {
-    if (index == acceptor->clientPollFdSetSize - 1) {
+    if (index + 1 == acceptor->clientPollFdSetSize) {
         popBackPollFd(acceptor);
         return;
     }
@@ -62,7 +62,7 @@ void removePollFd(TcpMultiplexAcceptor *const acceptor, const int index) {
 }
 
 void removeTcpSession(TcpMultiplexAcceptor *const acceptor, const int index) {
-    if(index == acceptor->tcpSessionsSize - 1) {
+    if(index + 1 == acceptor->tcpSessionsSize) {
         popBackTcpSession(acceptor);
         return;
     }
