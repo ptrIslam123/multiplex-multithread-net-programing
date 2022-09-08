@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 
-#define MAX_POSSIBLE_POOL_QUEUE_SIZE 10
+#define MAX_POSSIBLE_POOL_QUEUE_SIZE 10000
 
 typedef void (*TaskCallback)(void *context);
 

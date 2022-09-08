@@ -6,24 +6,22 @@
 #include "core/tcp_socket/tcp_socket.h"
 #include "core/acceptor/multiplex_acceptor_api.h"
 
-MultiplexAcceptorStatus clientRequestHandler(TcpSession *const session, void *data) {
+void clientRequestHandler(TcpSession *const session, void *data) {
     char buff[1024] = {0};
     int socket = session->clientSocket.socket;
     const ssize_t receiveBufferSize = read(socket, buff, sizeof(buff));
     if (receiveBufferSize < 0) {
         fprintf(stderr, "system call read is failed with error code %d\n", (int)receiveBufferSize);
-        return MultiplexAcceptorStatus_IOError;
+        return;
     }
 
     if (receiveBufferSize == 0) {
         session->status = TcpSessionStatus_Close;
-        return MultiplexAcceptorStatus_Ok;
+        return;
     }
 
     ssize_t sendBuffSize = 0;
-    while ((sendBuffSize = write(socket, buff, receiveBufferSize)) < sendBuffSize) {
-    }
-    return MultiplexAcceptorStatus_Ok;
+    while ((sendBuffSize = write(socket, buff, receiveBufferSize)) < sendBuffSize) {}
 }
 
 int main(int argc, char **argv) {

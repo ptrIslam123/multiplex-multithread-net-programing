@@ -19,7 +19,6 @@ typedef struct {
         StaticThreadPoolStatus error;
     };
     int isSuccessful;
-    union value;
 } InitStaticThreadPoolResult;
 
 InitStaticThreadPoolResult makeStaticThreadPool(int threadCount);

@@ -8,7 +8,6 @@
 int pushToQueue(StaticThreadPool *pool, WorkerContext task) {
     const int size = pool->queueSize;
     if (size + 1 > pool->queueCapacity) {
-        // TODO
         fprintf(stderr, CLASS_NAME_FOR_LOGGER"::pushToQueue: "
              "Can`t push new task to queue. Exhausted memory space with size %d\n", size);
         return -1;

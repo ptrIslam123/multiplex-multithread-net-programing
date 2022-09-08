@@ -5,7 +5,7 @@
 
 #include "tcp_socket.h"
 
-#define MAX_POSSIBLE_SIZE_TCP_SESSIONS 5
+#define MAX_POSSIBLE_SIZE_TCP_SESSIONS 10000
 
 typedef enum {
     TcpSessionStatus_Open,
@@ -22,7 +22,7 @@ typedef enum {
 } MultiplexAcceptorStatus;
 
 struct TcpSession;
-typedef MultiplexAcceptorStatus (*Callback)(struct TcpSession*, void*);
+typedef void (*Callback)(struct TcpSession*, void*);
 
 typedef struct {
     void *callbackData;
