@@ -31,10 +31,10 @@ InitStaticThreadPoolResult makeStaticThreadPool(const int threadCount) {
 
 WorkerContext *getIfReadyTaskOrWait(StaticThreadPool *const pool) {
     WorkerContext *task = NULL;
-    while ((task = topQueue(pool)) == NULL) {
+    while ((task = topFromQueue(pool)) == NULL) {
         pthread_cond_wait(&pool->checkerQueueNotEmpty_, &pool->queueLock);
     }
-    if (popQueue(pool) < 0) {
+    if (popFromQueue(pool) < 0) {
         return NULL;
     }
     return task;
@@ -48,10 +48,6 @@ void *workerLoop(void *arg) {
         context = getIfReadyTaskOrWait(pool);
         pthread_mutex_unlock(&pool->queueLock);
 
-        if (context == NULL) {
-            // TODO
-            break;
-        }
         if (context->isStop) {
             break;
         }
@@ -90,7 +86,7 @@ StaticThreadPoolStatus runEventLoopStaticThreadPool(StaticThreadPool *pool) {
 
 StaticThreadPoolStatus submitToStaticThreadPool(StaticThreadPool *pool, const WorkerContext context) {
     pthread_mutex_lock(&pool->queueLock);
-    if (pushQueue(pool, context) < 0) {
+    if (pushToQueue(pool, context) < 0) {
         pthread_mutex_unlock(&pool->queueLock);
         return StaticThreadPoolStatus_SubmitTaskError;
     }

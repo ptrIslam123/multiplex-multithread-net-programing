@@ -3,7 +3,15 @@
 
 #include "multiplex_acceptor.h"
 
-TcpMultiplexAcceptor *makeTcpMultiplexAcceptor(const TcpSocket *tcpListener,
+typedef struct {
+    union {
+        TcpMultiplexAcceptor *acceptor;
+        MultiplexAcceptorStatus status;
+    };
+    char isSuccessful;
+} InitTcpMultiplexAcceptorResult;
+
+InitTcpMultiplexAcceptorResult makeTcpMultiplexAcceptor(const TcpSocket *tcpListener,
                                                Callback callback, void *callbackData);
 void runEventPool(TcpMultiplexAcceptor *acceptor);
 void destroyTcpMultiplexAcceptor(TcpMultiplexAcceptor *acceptor);

@@ -19,7 +19,6 @@ typedef struct {
     };
 
     char isSuccessful;
-    union value;
 } TcpSocketResult;
 
 TcpSocketResult makeTcpSocket(int socketFd, Port port);

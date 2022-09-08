@@ -3,8 +3,8 @@
 
 #include "static_thread_pool.h"
 
-int pushQueue(StaticThreadPool *pool, WorkerContext task);
-int popQueue(StaticThreadPool *pool);
-WorkerContext *topQueue(StaticThreadPool *pool);
+int pushToQueue(StaticThreadPool *pool, WorkerContext task);
+int popFromQueue(StaticThreadPool *pool);
+WorkerContext *topFromQueue(StaticThreadPool *pool);
 
 #endif //PROJECT_QUEUE_API_H

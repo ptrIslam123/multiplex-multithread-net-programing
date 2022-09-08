@@ -7,13 +7,22 @@
 
 #define MAX_POSSIBLE_SIZE_TCP_SESSIONS 5
 
-struct TcpSession;
-typedef void (*Callback)(struct TcpSession*, void*);
-
 typedef enum {
     TcpSessionStatus_Open,
     TcpSessionStatus_Close
 } TcpSessionStatus;
+
+typedef enum {
+    MultiplexAcceptorStatus_Ok,
+    MultiplexAcceptorStatus_AcceptError,
+    MultiplexAcceptorStatus_IOError,
+    MultiplexAcceptorStatus_SocketCloseError,
+    MultiplexAcceptorStatus_ResourceExhaustion,
+    MultiplexAcceptorStatus_BadAllocationMemory
+} MultiplexAcceptorStatus;
+
+struct TcpSession;
+typedef MultiplexAcceptorStatus (*Callback)(struct TcpSession*, void*);
 
 typedef struct {
     void *callbackData;
@@ -27,6 +36,7 @@ typedef struct TcpSession {
 } TcpSession;
 
 typedef struct {
+    char isStop;
     RequestHandler requestHandler;
     int tcpSessionsSize;
     int clientPollFdSetSize;
