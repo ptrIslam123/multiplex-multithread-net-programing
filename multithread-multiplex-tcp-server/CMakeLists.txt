@@ -7,6 +7,7 @@ add_executable(${PROJECT_NAME} main.c)
 target_link_libraries(${PROJECT_NAME} PUBLIC
     tcp_socket
     acceptor
+    utils
     thread_pool
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ../)

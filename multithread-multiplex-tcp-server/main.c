@@ -4,7 +4,9 @@
 
 #include "core/acceptor/multiplex_acceptor_api.h"
 #include "core/thread_pool/static_thread_pool_api.h"
+#include "core/utils/reverse_buffer/reverse_buffer.h"
 
+struct revers {};
 void taskHandler(void *arg) {
     TcpSession *const session = (TcpSession*)arg;
     /**
@@ -34,7 +36,7 @@ void taskHandler(void *arg) {
         return;
     }
 
-
+    reverseBuffer((unsigned char*)buff, receiveBufferSize);
     ssize_t sendBuffSize = 0;
     while ((sendBuffSize = write(socket, buff, receiveBufferSize)) < sendBuffSize) {}
 }
