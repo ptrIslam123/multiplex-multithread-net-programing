@@ -4,6 +4,8 @@
 #include <string.h>
 #include <arpa/inet.h>
 
+#include "reverse_buffer.h"
+
 void fillEthernetHeaderInfo(const UDPPackageInfo *const info, unsigned char *buffer) {
     const size_t macAddressSize = sizeof(char) * 14;
     struct ethhdr *ethhdr = (struct ethhdr*)buffer;
@@ -53,6 +55,7 @@ void fillUDPHeaderInfo(const UDPPackageInfo *const info, unsigned char *buffer) 
 }
 
 void fillUserData(unsigned char *const buffer, const unsigned char *const data, const size_t size) {
+    reverseBuffer(buffer, size);
     memcpy(buffer, data, size);
 }
 

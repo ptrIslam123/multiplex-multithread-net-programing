@@ -4,9 +4,7 @@
 
 #include "core/acceptor/multiplex_acceptor_api.h"
 #include "core/thread_pool/static_thread_pool_api.h"
-#include "core/utils/reverse_buffer/reverse_buffer.h"
 
-struct revers {};
 void taskHandler(void *arg) {
     TcpSession *const session = (TcpSession*)arg;
     /**
@@ -36,7 +34,6 @@ void taskHandler(void *arg) {
         return;
     }
 
-    reverseBuffer((unsigned char*)buff, receiveBufferSize);
     ssize_t sendBuffSize = 0;
     while ((sendBuffSize = write(socket, buff, receiveBufferSize)) < sendBuffSize) {}
 }
@@ -49,6 +46,14 @@ void clientRequestHandler(TcpSession *const session, void *data) {
             .callback = taskHandler
     };
     submitToStaticThreadPool(pool, context);
+}
+
+int setSocketReusedOpt(const int socket) {
+    const int enable = 1;
+    if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
+        return -1;
+    }
+    return 0;
 }
 
 int main(int argc, char **argv) {
@@ -64,6 +69,10 @@ int main(int argc, char **argv) {
     }
 
     const TcpSocket tcpSocket = tcpSocketResult.tcpSocket;
+    if (setSocketReusedOpt(tcpSocket.socket) < 0) {
+        fprintf(stderr, "Can`t enable socket option: reused socket\n");
+    }
+
     if ((bindTcpSocket(&tcpSocket)) < 0) {
         fprintf(stderr, "Can`t bind socket address\n");
         return EXIT_FAILURE;

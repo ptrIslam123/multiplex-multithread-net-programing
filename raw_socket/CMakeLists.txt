@@ -8,3 +8,5 @@ add_executable(${PROJECT_NAME}
     net_interface_info.c
     maker_net_headers.c
 )
+
+target_link_libraries(${PROJECT_NAME} PUBLIC utils)
